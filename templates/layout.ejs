@@ -1,13 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/vendor/bower_components/bootstrap/dist/css/bootstrap.min.css' />
-    <link rel='stylesheet' href='/css/style.css' />
-    <script type="text/javascript" src="/vendor/bower_components/jquery/dist/jquery.min.js" s></script>
-    <script type="text/javascript" src="/vendor/bower_components/bootstrap/dist/js/bootstrap.min.js" s></script>
+    <title><%=blocks.title%></title>
+
+    <link rel="stylesheet" href="/vendor/bower_components/bootstrap/dist/css/bootstrap.css"/>
+    <link rel="stylesheet" href="/css/app.css"/>
+
+    <script src="/vendor/bower_components/jquery/jquery.js"></script>
+    <script src="/vendor/bower_components/bootstrap/dist/js/bootstrap.js"></script>
 </head>
 <body>
-<%-body -%>
+<header>
+    <%-blocks.header%>
+</header>
+<section class="container">
+    <h1><%=blocks.title%></h1>
+
+    <%-body -%>
+</section>
+<footer>
+</footer>
 </body>
 </html>

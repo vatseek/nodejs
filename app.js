@@ -6,6 +6,7 @@ var path = require('path');
 var config = require('config');
 var log = require('libs/log')(module);
 var engine = require('ejs-locals');
+var assert = require('assert');
 
 var app = express();
 app.set('port', config.get('port'));
@@ -28,20 +29,29 @@ if (app.get('env') == 'development') {
 app.use(express.json());
 app.use(express.urlencoded());
 //app.use(express.session({ secret: 'your secret here' }));
+app.use(require('middleware/sendHttpError'));
 app.use(app.router);
 
-app.get('/', function(req, res, next){
-    res.render('index', {title: 'Hello worlds'});
-});
+require('routes')(app)
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-
+var HttpError = require('error').HttpError;
 app.use(function(err, req, res, next) {
-    if (app.get('env') == 'development') {
-        var errorHendler = express.errorHandler();
-        errorHendler(err, req, res, next);
+    if (typeof err == 'number') {
+        err = new HttpError(err);
+    }
+
+    if (err instanceof HttpError) {
+        res.sendHttpError(err);
     } else {
-        res.send('500', 'Error');
+        if (app.get('env') == 'development') {
+            var errorHendler = express.errorHandler();
+            errorHendler(err, req, res, next);
+        } else {
+            log.error(err);
+            err = new HttpError(500);
+            res.sendHttpError(err);
+        }
     }
 });
